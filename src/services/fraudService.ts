@@ -1,22 +1,22 @@
 import fs from 'fs';
 import path from 'path';
-type RiskInput = {
-    amount: number;
-    email?: string;
-    source?: string;
-    metadata?: any
+import { WEIGHT_SCORE } from '../config/constant';
+import { FraudRules, RiskInput } from '../models/transaction';
 
-}
-const rulesPath = path.join(__dirname, '..', 'config', 'fraudRules.json');
-let rules = {
-    highAmount: 1000,
+const defaultRules: FraudRules = {
+    highAmount: WEIGHT_SCORE.highAmount,
     suspiciousDomains: ['.ru', 'test.com']
 };
+
+let rules: FraudRules = defaultRules;
+
+const rulesPath = path.join(__dirname, '..', 'config', 'fraudRules.json');
 
 try {
     if (fs.existsSync(rulesPath)) {
         const file = fs.readFileSync(rulesPath, 'utf8');
-        rules = JSON.parse(file);
+        const parsed = JSON.parse(file);
+        rules = { ...defaultRules, ...parsed };
     }
 } catch (e: any) {
     console.warn(`could not load fraud rules from ${rulesPath}, using defaults. Error: `, e.message);
@@ -24,16 +24,14 @@ try {
 
 export function computeRisk(input: RiskInput) {
     const reasons: string[] = [];
-    let score = 0.0;
+    let score =  WEIGHT_SCORE.initialScore;
 
     const amt = input.amount;
 
     // Amount-based risk calculation
     if (amt >= rules.highAmount) {
-        score += 0.5;
+        score += WEIGHT_SCORE.highAmountScore;
         reasons.push(`high_amount >= ${rules.highAmount}`);
-    } else {
-        score += (amt / rules.highAmount) * 0.3;
     }
 
     // Email domain check
@@ -41,19 +39,12 @@ export function computeRisk(input: RiskInput) {
         const email = input.email.toLowerCase();
         for (const domain of rules.suspiciousDomains) {
             if (email.endsWith(domain) || email.includes(domain)) {
-                score += 0.3;
+                score += WEIGHT_SCORE.fraudEmailScore;
                 reasons.push(`suspicious_email_domain ${domain}`);
                 break; // Only add one reason per email check
             }
         }
     }
-
-    // suspicious source token (simple pattern)
-    if (input.source && input.source.includes('test')) {
-        score += 0.2;
-        reasons.push('test_source_token');
-    }
-
 
     // clamp
     if (score > 1) score = 1;

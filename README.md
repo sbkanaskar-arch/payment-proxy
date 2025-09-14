@@ -75,10 +75,6 @@ The payment proxy implements a multi-layered fraud detection system with the fol
 - **Detection**: Checks if email ends with or contains suspicious domains
 - **Reason**: "suspicious_email_domain {domain}"
 
-#### 3. Source Pattern Detection
-- **Test Source Detection**: +0.2 risk score for sources containing "test"
-- **Reason**: "test_source_token"
-
 #### 4. Risk Score Calculation
 - **Final Score**: Sum of all risk factors, clamped to maximum of 1.0
 - **Blocking Threshold**: Transactions with score ≥ 0.5 are automatically blocked

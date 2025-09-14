@@ -9,3 +9,15 @@ export type Transaction = {
     explanation?: string;
     timestamp: string;
 };
+
+export type RiskInput = {
+    amount: number;
+    email?: string;
+    source?: string;
+    metadata?: any
+
+}
+export type FraudRules = {
+    highAmount: number;
+    suspiciousDomains: string[];
+};

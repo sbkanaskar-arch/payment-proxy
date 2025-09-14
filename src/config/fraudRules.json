@@ -1,4 +1,4 @@
 {
   "highAmount": 1000,
-  "suspiciousDomains": [".ru", "test.com", "spam.xyz"]
+  "suspiciousDomains": [".ru", "test.com"]
 }
