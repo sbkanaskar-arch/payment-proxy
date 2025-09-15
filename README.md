@@ -66,7 +66,6 @@ The payment proxy implements a multi-layered fraud detection system with the fol
 - **High Amount Threshold**: Configurable via `src/config/fraudRules.json` (default: 1000)
 - **Scoring Logic**:
   - If `amount >= highAmount`: +0.5 risk score
-  - Otherwise: `(amount / highAmount) * 0.3` proportional score
 - **Reason**: "high_amount >= {threshold}" for high amounts
 
 #### 2. Email Domain Analysis
