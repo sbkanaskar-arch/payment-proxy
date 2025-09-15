@@ -172,15 +172,11 @@ Health check endpoint
 
 ## ⚖️ Assumptions & Tradeoffs
 
-### Assumptions
-
 1. **In-Memory Storage**: Transactions are stored in memory (not persistent)
 2. **Simple Provider Routing**: Even amounts → Stripe, Odd amounts → PayPal
 3. **Static Fraud Rules**: Rules loaded once at startup (no hot-reloading)
 4. **Synchronous Processing**: All fraud checks are synchronous
 5. **No External APIs**: LLM service uses fallback implementation
-
-### Tradeoffs
 
 #### Performance vs. Accuracy
 - **Fast Processing**: In-memory storage and caching for speed
